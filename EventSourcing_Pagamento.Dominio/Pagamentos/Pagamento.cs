@@ -31,5 +31,8 @@ namespace EventSourcing_Pagamento.Dominio.Pagamentos
             Aprovado = true;
             BandeiraDoCartao = bandeiraDoCartaoEsperada;
         }
+        
+        public void Negar() 
+            => Aprovado = false;
     }
 }
