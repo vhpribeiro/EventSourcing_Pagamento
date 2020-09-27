@@ -26,11 +26,10 @@ namespace EventSourcing_Pagamento.Dominio.Test.Pagamentos
             {
                 IdDoPedido = idDoPedido,
                 NumeroDoCartaoDeCredito = numeroDoCartaoDeCredito,
-                ExpiracaoDoCartaoDeCredito = expiracaoDoCartaoDeCredito,
                 NomeNoCartaoDeCredito = nomeNoCartaoDeCredito
             };
             
-            var pagamentoObtido = new Pagamento(idDoPedido, numeroDoCartaoDeCredito, expiracaoDoCartaoDeCredito, nomeNoCartaoDeCredito);
+            var pagamentoObtido = new Pagamento(idDoPedido, numeroDoCartaoDeCredito, nomeNoCartaoDeCredito);
             
             pagamentoObtido.ToExpectedObject(ctx => ctx.Ignore(p => p.DataDoPagamento))
                 .ShouldMatch(pagamentoEsperado);

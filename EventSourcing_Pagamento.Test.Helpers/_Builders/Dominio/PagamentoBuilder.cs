@@ -9,7 +9,6 @@ namespace EventSourcing_Pagamento.Test.Helpers._Builders.Dominio
         private int _idDoPedido = Faker.Random.Int(0);
         private string _numeroDoCartaoDeCredito = Faker.Random.Int(1000000).ToString();
         private string _nomeNoCartaoDeCredito = Faker.Person.FullName;
-        private string _expiracaoDoCartaoDeCredito = "03/207";
 
         public static PagamentoBuilder Novo() 
             => new PagamentoBuilder();
@@ -32,13 +31,7 @@ namespace EventSourcing_Pagamento.Test.Helpers._Builders.Dominio
             return this;
         }
 
-        public PagamentoBuilder ComExpiracaoDoCartaoDeCredito(string expiracaoDoCartaoDeCredito)
-        {
-            _expiracaoDoCartaoDeCredito = expiracaoDoCartaoDeCredito;
-            return this;
-        }
-
         public Pagamento Criar() 
-            => new Pagamento(_idDoPedido, _numeroDoCartaoDeCredito, _expiracaoDoCartaoDeCredito, _nomeNoCartaoDeCredito);
+            => new Pagamento(_idDoPedido, _numeroDoCartaoDeCredito, _nomeNoCartaoDeCredito);
     }
 }

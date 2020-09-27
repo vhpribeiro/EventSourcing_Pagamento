@@ -15,9 +15,9 @@ namespace EventSourcing_Pagamento.Aplicacao.Pagamentos
     {
         public async Task ProcessarPagamentoAsync(PedidoCriadoEvento pedidoCriadoEvento)
         {
-            var pedido = JsonConvert.DeserializeObject<Pedido>(pedidoCriadoEvento.MetaDado);
-            var pagamento = new Pagamento(pedido.Id, pedido.CartaoDeCredito.Numero, pedido.CartaoDeCredito.Expiracao, pedido.CartaoDeCredito.Nome);
-            var detector = new CreditCardDetector(pedido.CartaoDeCredito.Numero);
+            var pagamento = new Pagamento(pedidoCriadoEvento.IdDoPedido, pedidoCriadoEvento.NumeroDoCartao,
+                pedidoCriadoEvento.NomeDoUsuario);
+            var detector = new CreditCardDetector(pagamento.NumeroDoCartaoDeCredito);
             
             if (detector.IsValid())
                 pagamento.Aprovar(detector.BrandName);
