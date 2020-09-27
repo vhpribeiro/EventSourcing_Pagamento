@@ -24,13 +24,17 @@ namespace EventSourcing_Pagamento.API.BackgroundServices.Handlers
         
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _mensageria.Receive(_nomeDaQueue, x =>
-                x.Add<string>(m =>
-                {
-                    var mensagem = m;
-                    var testeDeConversao = JsonConvert.DeserializeObject<PedidoCriadoEvento>(mensagem);
-                    _processamentoDePagamento.ProcessarPagamentoAsync(testeDeConversao);
-                }));
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                _mensageria.Receive(_nomeDaQueue, x =>
+                    x.Add<string>(m =>
+                    {
+                        var mensagem = m;
+                        var testeDeConversao = JsonConvert.DeserializeObject<PedidoCriadoEvento>(mensagem);
+                        _processamentoDePagamento.ProcessarPagamentoAsync(testeDeConversao);
+                    }));
+            }
+
         }
     }
 }
