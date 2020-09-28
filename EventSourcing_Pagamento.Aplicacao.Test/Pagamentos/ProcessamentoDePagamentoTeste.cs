@@ -39,15 +39,17 @@ namespace EventSourcing_Pagamento.Aplicacao.Test.Pagamentos
             _pagamentoRepositorio.Verify(pr => pr.Salvar(It.Is<Pagamento>(p => p.Aprovado)));
         }
         
-        [Fact]
-        public void Deve_negar_o_pagamento_de_um_cartao_invalido()
+        [Theory]
+        [InlineData("349287434")]
+        [InlineData("677186")]
+        [InlineData("34754567")]
+        public void Deve_negar_o_pagamento_de_um_cartao_invalido(string numeroDeCartaoInvalidos)
         {
             var id = _faker.Random.Int(0);
             var nomeDoCartao = _faker.Person.FullName;
-            var numeroDoCartao = _faker.Random.Int(0).ToString();
             var produto = _faker.Random.String2(9);
             var valor = _faker.Random.Decimal();
-            var pedidoCriadoEvento = new PedidoCriadoEvento(id, nomeDoCartao, numeroDoCartao, produto, valor);
+            var pedidoCriadoEvento = new PedidoCriadoEvento(id, nomeDoCartao, numeroDeCartaoInvalidos, produto, valor);
             
             _processamentoDePagamento.ProcessarPagamentoAsync(pedidoCriadoEvento);
             

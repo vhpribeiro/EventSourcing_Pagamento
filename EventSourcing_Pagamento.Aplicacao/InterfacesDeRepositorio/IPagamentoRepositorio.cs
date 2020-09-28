@@ -5,6 +5,6 @@ namespace EventSourcing_Pagamento.Aplicacao.InterfacesDeRepositorio
 {
     public interface IPagamentoRepositorio
     {
-        Task Salvar(Pagamento pedido);
+        Task Salvar(Pagamento pagamento);
     }
 }

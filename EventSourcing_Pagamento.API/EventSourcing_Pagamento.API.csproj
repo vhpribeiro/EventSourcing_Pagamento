@@ -11,6 +11,7 @@
     <ItemGroup>
       <ProjectReference Include="..\EventSourcing_Pagamento.Aplicacao\EventSourcing_Pagamento.Aplicacao.csproj" />
       <ProjectReference Include="..\EventSourcing_Pagamento.Dominio\EventSourcing_Pagamento.Dominio.csproj" />
+      <ProjectReference Include="..\EventSourcing_Pagamento.Infra\EventSourcing_Pagamento.Infra.csproj" />
     </ItemGroup>
 
 

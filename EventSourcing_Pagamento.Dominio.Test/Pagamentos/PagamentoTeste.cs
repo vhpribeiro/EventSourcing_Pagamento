@@ -21,7 +21,6 @@ namespace EventSourcing_Pagamento.Dominio.Test.Pagamentos
             var idDoPedido = _faker.Random.Int(0);
             var numeroDoCartaoDeCredito = _faker.Random.Int(1000000).ToString();
             var nomeNoCartaoDeCredito = _faker.Person.FullName;
-            const string expiracaoDoCartaoDeCredito = "03/27";
             var pagamentoEsperado = new
             {
                 IdDoPedido = idDoPedido,
