@@ -1,12 +1,12 @@
-﻿using EventSourcing_Pagamento.Dominio.Pedidos;
-
+﻿
 namespace EventSourcing_Pagamento.Dominio.Eventos
 {
     public class PedidoCriadoEvento : Evento
     {   
         public PedidoCriadoEvento() {}
         
-        public PedidoCriadoEvento(Pedido pedido) : base(pedido.Id, pedido.CartaoDeCredito.Nome, pedido.CartaoDeCredito.Numero, pedido.Produto, pedido.Valor)
+        public PedidoCriadoEvento(int id, string nomeDoCartao, string numeroDoCartao, string produto, decimal valor) 
+            : base(id, nomeDoCartao, numeroDoCartao, produto, valor)
         {
         }
     }

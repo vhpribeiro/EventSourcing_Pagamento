@@ -1,13 +1,9 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using EventSourcing_Pagamento.Dominio.Pedidos;
-using Newtonsoft.Json;
 
 namespace EventSourcing_Pagamento.Dominio.Eventos
 {
     public abstract class Evento
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string NomeDoUsuario { get; }
         public DateTime Data { get; }

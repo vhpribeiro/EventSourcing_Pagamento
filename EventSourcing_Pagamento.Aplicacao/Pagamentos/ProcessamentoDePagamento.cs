@@ -1,18 +1,20 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CreditCardValidator;
-using EasyNetQ;
+using EventSourcing_Pagamento.Aplicacao.InterfacesDeRepositorio;
 using EventSourcing_Pagamento.Dominio.Eventos;
 using EventSourcing_Pagamento.Dominio.Pagamentos;
-using EventSourcing_Pagamento.Dominio.Pedidos;
-using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 
 namespace EventSourcing_Pagamento.Aplicacao.Pagamentos
 {
     public class ProcessamentoDePagamento : IProcessamentoDePagamento
     {
+        private readonly IPagamentoRepositorio _pagamentoRepositorio;
+
+        public ProcessamentoDePagamento(IPagamentoRepositorio pagamentoRepositorio)
+        {
+            _pagamentoRepositorio = pagamentoRepositorio;
+        }
+        
         public async Task ProcessarPagamentoAsync(PedidoCriadoEvento pedidoCriadoEvento)
         {
             var pagamento = new Pagamento(pedidoCriadoEvento.IdDoPedido, pedidoCriadoEvento.NumeroDoCartao,
@@ -23,6 +25,8 @@ namespace EventSourcing_Pagamento.Aplicacao.Pagamentos
                 pagamento.Aprovar(detector.BrandName);
             else
                 pagamento.Negar();
+
+            await _pagamentoRepositorio.Salvar(pagamento);
         }
     }
 }
