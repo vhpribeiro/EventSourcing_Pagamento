@@ -27,11 +27,10 @@ namespace EventSourcing_Pagamento.API.BackgroundServices.Handlers
             while (!stoppingToken.IsCancellationRequested)
             {
                 _mensageria.Receive(_nomeDaQueue, x =>
-                    x.Add<string>(m =>
+                    x.Add<string>(mensagem =>
                     {
-                        var mensagem = m;
-                        var testeDeConversao = JsonConvert.DeserializeObject<PedidoCriadoEvento>(mensagem);
-                        _processamentoDePagamento.ProcessarPagamentoAsync(testeDeConversao);
+                        var pedidoCriadoEvento = JsonConvert.DeserializeObject<PedidoCriadoEvento>(mensagem);
+                        _processamentoDePagamento.ProcessarPagamentoAsync(pedidoCriadoEvento);
                     }));
             }
 

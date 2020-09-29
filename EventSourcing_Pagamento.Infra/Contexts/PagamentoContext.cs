@@ -21,7 +21,7 @@ namespace EventSourcing_Pagamento.Infra.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //TODO jogar essa connection string no appsettings
-            optionsBuilder.UseSqlServer("Password=vhpr1706;Persist Security Info=True;User ID=sa;Initial Catalog=EventSourcingProjeto;Data Source=DESKTOP-NEOJFCR\\MSSQLSERVER2019",
+            optionsBuilder.UseSqlServer("Password=vhpr1706;Persist Security Info=True;User ID=sa;Initial Catalog=EventSourcingPagamento;Data Source=DESKTOP-NEOJFCR\\MSSQLSERVER2019",
                 b => b.MigrationsAssembly("EventSourcing_Pagamento.Infra"));
         }
 

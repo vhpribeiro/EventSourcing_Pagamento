@@ -13,7 +13,7 @@ namespace EventSourcing_Pagamento.API.Configuracoes
         {
             services.AddSingleton<IProcessamentoDePagamento, ProcessamentoDePagamento>();
             services.AddSingleton<IBus>(x => RabbitHutch.CreateBus(configuration.GetValue<string>("RabbitConnection")));
-            services.AddScoped<IPagamentoRepositorio, PagamentoRepositorio>();
+            services.AddSingleton<IPagamentoRepositorio, PagamentoRepositorio>();
         }    
     }
 }

@@ -5,12 +5,12 @@ namespace EventSourcing_Pagamento.Dominio.Eventos
     public abstract class Evento
     {
         public int Id { get; set; }
-        public string NomeDoUsuario { get; }
-        public DateTime Data { get; }
-        public decimal Valor { get; }
-        public string Produto { get; }
-        public string NumeroDoCartao { get; }
-        public int IdDoPedido { get; }
+        public string NomeDoUsuario { get; set; }
+        public DateTime Data { get; set; }
+        public decimal Valor { get; set; }
+        public string Produto { get; set; }
+        public string NumeroDoCartao { get; set; }
+        public int IdDoPedido { get; set; }
 
         public Evento() {}
 
