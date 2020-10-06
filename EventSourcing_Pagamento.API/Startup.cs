@@ -26,6 +26,7 @@ namespace EventSourcing_Pagamento.API
             services.AddControllers();
             services.AddDbContext<PagamentoContext>();
             services.AddHostedService<PedidoCriadoEventoHandler>();
+            services.AddHostedService<AlterouCartaoDeCreditoDoPedidoEventoHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

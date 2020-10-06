@@ -9,13 +9,13 @@ using Newtonsoft.Json;
 
 namespace EventSourcing_Pagamento.API.BackgroundServices.Handlers
 {
-    public class PedidoCriadoEventoHandler : BackgroundService
+    public class AlterouCartaoDeCreditoDoPedidoEventoHandler : BackgroundService
     {
         private readonly IBus _mensageria;
         private readonly string _nomeDaQueue;
         private readonly IProcessamentoDePagamento _processamentoDePagamento;
-
-        public PedidoCriadoEventoHandler(IBus mensageria, IConfiguration configuration, IProcessamentoDePagamento processamentoDePagamento)
+        
+        public AlterouCartaoDeCreditoDoPedidoEventoHandler(IBus mensageria, IConfiguration configuration, IProcessamentoDePagamento processamentoDePagamento)
         {
             _mensageria = mensageria;
             _nomeDaQueue = configuration.GetValue<string>("RabbitQueue");
@@ -29,8 +29,8 @@ namespace EventSourcing_Pagamento.API.BackgroundServices.Handlers
                 _mensageria.Receive(_nomeDaQueue, x =>
                     x.Add<string>(mensagem =>
                     {
-                        var pedidoCriadoEvento = JsonConvert.DeserializeObject<PedidoCriadoEvento>(mensagem);
-                        if(pedidoCriadoEvento != null) _processamentoDePagamento.ProcessarPagamentoAsync(pedidoCriadoEvento);
+                        var alterouCartaoDeCreditoDoPedidoEvento = JsonConvert.DeserializeObject<AlterouCartaoDeCreditoDoPedidoEvento>(mensagem);
+                        _processamentoDePagamento.ReprocessarPagamentoAsync(alterouCartaoDeCreditoDoPedidoEvento);
                     }));
             }
         }

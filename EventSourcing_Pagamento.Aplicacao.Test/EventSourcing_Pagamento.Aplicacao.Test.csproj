@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EventSourcing_Pagamento.Aplicacao\EventSourcing_Pagamento.Aplicacao.csproj" />
+      <ProjectReference Include="..\EventSourcing_Pagamento.Test.Helpers\EventSourcing_Pagamento.Test.Helpers.csproj" />
     </ItemGroup>
 
 </Project>
