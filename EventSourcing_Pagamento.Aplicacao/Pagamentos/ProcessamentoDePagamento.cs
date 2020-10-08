@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using CreditCardValidator;
 using EventSourcing_Pagamento.Aplicacao.InterfacesDeRepositorio;
-using EventSourcing_Pagamento.Dominio.Eventos;
 using EventSourcing_Pagamento.Dominio.Pagamentos;
+using EventSourcingPedidoPagamento.Contratos.Eventos;
 
 namespace EventSourcing_Pagamento.Aplicacao.Pagamentos
 {

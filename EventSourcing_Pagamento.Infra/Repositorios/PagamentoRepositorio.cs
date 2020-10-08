@@ -19,28 +19,33 @@ namespace EventSourcing_Pagamento.Infra.Repositorios
         public async Task Salvar(Pagamento pagamento)
         {
             //TODO pensar em como melhorar isso
-            var contexto = ObterEscopo();
-            await contexto.Pagamentos.AddAsync(pagamento);
-            await contexto.SaveChangesAsync();
+            using (var escopo = _scopeFactory.CreateScope())
+            {
+                var servicosEscopo = escopo.ServiceProvider;
+                var contexto = servicosEscopo.GetRequiredService<PagamentoContext>();
+                await contexto.Pagamentos.AddAsync(pagamento);
+                await contexto.SaveChangesAsync();
+            }
         }
 
         public async Task<Pagamento> ObterPeloIdDoPedido(int idDoPedido)
         {
-            var contexto = ObterEscopo();
-            return await contexto.Pagamentos.FirstOrDefaultAsync(p => p.IdDoPedido == idDoPedido);
+            using (var escopo = _scopeFactory.CreateScope())
+            {
+                var servicosEscopo = escopo.ServiceProvider;
+                var contexto = servicosEscopo.GetRequiredService<PagamentoContext>();
+                return await contexto.Pagamentos.FirstOrDefaultAsync(p => p.IdDoPedido == idDoPedido);
+            }
         }
 
         public void AtualizarPagamento(Pagamento pagamento)
         {
-            var contexto = ObterEscopo();
-            contexto.Pagamentos.Update(pagamento);
-        }
-        
-        private PagamentoContext ObterEscopo()
-        {
-            using var scope = _scopeFactory.CreateScope();
-            var contexto = scope.ServiceProvider.GetRequiredService<PagamentoContext>();
-            return contexto;
+            using (var escopo = _scopeFactory.CreateScope())
+            {
+                var servicosEscopo = escopo.ServiceProvider;
+                var contexto = servicosEscopo.GetRequiredService<PagamentoContext>();
+                contexto.Pagamentos.Update(pagamento);
+            }
         }
     }
 }

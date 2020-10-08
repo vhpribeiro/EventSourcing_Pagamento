@@ -2,9 +2,9 @@
 using Bogus;
 using EventSourcing_Pagamento.Aplicacao.InterfacesDeRepositorio;
 using EventSourcing_Pagamento.Aplicacao.Pagamentos;
-using EventSourcing_Pagamento.Dominio.Eventos;
 using EventSourcing_Pagamento.Dominio.Pagamentos;
 using EventSourcing_Pagamento.Test.Helpers._Builders.Dominio;
+using EventSourcingPedidoPagamento.Contratos.Eventos;
 using Moq;
 using Xunit;
 

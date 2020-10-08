@@ -1,5 +1,5 @@
 using EasyNetQ;
-using EventSourcing_Pagamento.API.BackgroundServices.Handlers;
+using EventSourcing_Pagamento.API.BackgroundServices;
 using EventSourcing_Pagamento.API.Configuracoes;
 using EventSourcing_Pagamento.Aplicacao.Pagamentos;
 using EventSourcing_Pagamento.Infra.Contexts;
@@ -25,8 +25,7 @@ namespace EventSourcing_Pagamento.API
             ConfiguracaoDeInjecaoDeDependencia.Configurar(services, Configuration);
             services.AddControllers();
             services.AddDbContext<PagamentoContext>();
-            services.AddHostedService<PedidoCriadoEventoHandler>();
-            services.AddHostedService<AlterouCartaoDeCreditoDoPedidoEventoHandler>();
+            services.AddHostedService<RabbitMqSubscriber>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
