@@ -12,5 +12,13 @@ A ideia é simular como funcionar um sistema de criação/atualização/cancelam
 - BackgroundServices
 - Event Sourcing
 
+## Executar projeto
+
+Para executar o projeto é necessário seguir os seguintes passos:
+
+2. Configurar a Connection String do projeto
+3. Rodar a migration
+4. Subir a aplicação que irá ser executada na porta `6000`
+
 ## Observações
 O projeto que complementa tal micro serviço é o Event Sourcing - Pedido que também esta em meu github! Sugestões e feedbacks são sempre bem vindos!
