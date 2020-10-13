@@ -7,7 +7,7 @@
     <ItemGroup>
       <PackageReference Include="CreditCardValidator" Version="2.0.0" />
       <PackageReference Include="EasyNetQ" Version="5.2.2" />
-      <PackageReference Include="EventSourcingPedidoPagamento.Contratos" Version="1.0.2" />
+      <PackageReference Include="EventSourcingPedidoPagamento.Contratos" Version="1.0.3" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.8" />
     </ItemGroup>
 

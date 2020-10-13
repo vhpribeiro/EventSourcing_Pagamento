@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using CreditCardValidator;
+using EasyNetQ;
 using EventSourcing_Pagamento.Aplicacao.InterfacesDeRepositorio;
 using EventSourcing_Pagamento.Dominio.Pagamentos;
 using EventSourcingPedidoPagamento.Contratos.Eventos;
@@ -9,10 +10,12 @@ namespace EventSourcing_Pagamento.Aplicacao.Pagamentos
     public class ProcessamentoDePagamento : IProcessamentoDePagamento
     {
         private readonly IPagamentoRepositorio _pagamentoRepositorio;
+        private readonly IBus _mensageria;
 
-        public ProcessamentoDePagamento(IPagamentoRepositorio pagamentoRepositorio)
+        public ProcessamentoDePagamento(IPagamentoRepositorio pagamentoRepositorio, IBus mensageria)
         {
             _pagamentoRepositorio = pagamentoRepositorio;
+            _mensageria = mensageria;
         }
         
         public async Task ProcessarPagamentoAsync(PedidoCriadoEvento pedidoCriadoEvento)
@@ -20,7 +23,7 @@ namespace EventSourcing_Pagamento.Aplicacao.Pagamentos
             var pagamento = new Pagamento(pedidoCriadoEvento.IdDoPedido, pedidoCriadoEvento.NumeroDoCartao,
                 pedidoCriadoEvento.NomeDoUsuario);
             
-            ValidarCartaoDeCredito(pagamento);
+            ValidarCartaoDeCredito(pagamento, pedidoCriadoEvento.Produto, pedidoCriadoEvento.Valor);
 
             await _pagamentoRepositorio.Salvar(pagamento);
         }
@@ -32,19 +35,33 @@ namespace EventSourcing_Pagamento.Aplicacao.Pagamentos
             pagamento.AlterarCartaoDeCredito(alterouCartaoDeCreditoDoPedidoEvento.NumeroDoCartao,
                 alterouCartaoDeCreditoDoPedidoEvento.NomeDoUsuario);
             
-            ValidarCartaoDeCredito(pagamento);
+            ValidarCartaoDeCredito(pagamento, alterouCartaoDeCreditoDoPedidoEvento.Produto, alterouCartaoDeCreditoDoPedidoEvento.Valor);
 
             _pagamentoRepositorio.AtualizarPagamento(pagamento);
         }
 
-        private static void ValidarCartaoDeCredito(Pagamento pagamento)
+        private void ValidarCartaoDeCredito(Pagamento pagamento, string produto, in decimal valor)
         {
             var detector = new CreditCardDetector(pagamento.NumeroDoCartaoDeCredito);
 
             if (detector.IsValid())
+            {
                 pagamento.Aprovar(detector.BrandName);
+                
+                var pagamentoAprovadoEvento = new PagamentoAprovadoEvento(pagamento.IdDoPedido,
+                    pagamento.NomeNoCartaoDeCredito, pagamento.NumeroDoCartaoDeCredito, produto, valor);
+                _mensageria.PublishAsync(pagamentoAprovadoEvento);
+            }
+
             else
+            {
                 pagamento.Negar();
+                
+                var pagamentoRecusadoEvento = new PagamentoRecusadoEvento(pagamento.IdDoPedido,
+                    pagamento.NomeNoCartaoDeCredito, pagamento.NumeroDoCartaoDeCredito, produto, valor);
+                _mensageria.PublishAsync(pagamentoRecusadoEvento);
+            }
+                
         }
     }
 }
