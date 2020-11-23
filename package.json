@@ -1,0 +1,21 @@
+{
+  "name": "eventsourcing_pagamento",
+  "version": "1.0.0",
+  "description": "A ideia é simular como funcionar um sistema de criação/atualização/cancelamento de pedido e como tais ações são afetadas em um outro serviço de pagamento. É um projeto que visa praticar o uso de conceitos como Event Sourcing, comunicação de micro serviços usando Send/Receive, background services, testes unitários, onion architecture e testes.",
+  "main": "index.js",
+  "scripts": {
+    "update-database": "dotnet ef --project ./EventSourcing_Pagamento.Infra/EventSourcing_Pagamento.Infra.csproj --startup-project ./EventSourcing_Pagamento.API/EventSourcing_Pagamento.API.csproj database update",
+    "add-migration": "dotnet ef --project ./EventSourcing_Pagamento.Infra/EventSourcing_Pagamento.Infra.csproj --startup-project ./EventSourcing_Pagamento.API/EventSourcing_Pagamento.API.csproj migrations add",
+    "remove-migration": "dotnet ef --project ./EventSourcing_Pagamento.Infra/EventSourcing_Pagamento.Infra.csproj --startup-project ./EventSourcing_Pagamento.API/EventSourcing_Pagamento.API.csproj migrations remove"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vhpribeiro/EventSourcing_Pagamento.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vhpribeiro/EventSourcing_Pagamento/issues"
+  },
+  "homepage": "https://github.com/vhpribeiro/EventSourcing_Pagamento#readme"
+}
