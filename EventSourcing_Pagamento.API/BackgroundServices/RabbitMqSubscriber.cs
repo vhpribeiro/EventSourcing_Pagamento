@@ -3,40 +3,49 @@ using System.Threading.Tasks;
 using EasyNetQ;
 using EventSourcing_Pagamento.Aplicacao.Pagamentos;
 using EventSourcingPedidoPagamento.Contratos.Eventos;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace EventSourcing_Pagamento.API.BackgroundServices
 {
     public class RabbitMqSubscriber : BackgroundService
     {
-        private readonly IBus _mensageria;
-        private readonly IProcessamentoDePagamento _processamentoDePagamento;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public RabbitMqSubscriber(IBus mensageria, IProcessamentoDePagamento processamentoDePagamento)
+        public RabbitMqSubscriber(IServiceScopeFactory scopeFactory)
         {
-            _mensageria = mensageria;
-            _processamentoDePagamento = processamentoDePagamento;
+            _scopeFactory = scopeFactory;
         }
         
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            using (var escopo = _scopeFactory.CreateScope())
             {
-                _mensageria.Subscribe<PedidoCriadoEvento>("pedidoCriadoEvento", pedidoCriadoEvento =>
+                var mensageria = escopo.ServiceProvider.GetService<IBus>();
+                var processamentoDePagamento = escopo.ServiceProvider.GetService<IProcessamentoDePagamento>();
+                
+                while (!stoppingToken.IsCancellationRequested)
                 {
-                    _processamentoDePagamento.ProcessarPagamentoAsync(pedidoCriadoEvento);
-                });
-                _mensageria.Subscribe<AlterouCartaoDeCreditoDoPedidoEvento>("alterouEvento", alterouCartaoDeCreditoDoPedidoEvento =>
-                {
-                    _processamentoDePagamento.ReprocessarPagamentoAsync(alterouCartaoDeCreditoDoPedidoEvento);
-                });
+                    mensageria.Subscribe<PedidoCriadoEvento>("pedidoCriadoEvento", pedidoCriadoEvento =>
+                    {
+                        processamentoDePagamento.ProcessarPagamentoAsync(pedidoCriadoEvento);
+                    });
+                    mensageria.Subscribe<AlterouCartaoDeCreditoDoPedidoEvento>("alterouEvento", alterouCartaoDeCreditoDoPedidoEvento =>
+                    {
+                        processamentoDePagamento.ReprocessarPagamentoAsync(alterouCartaoDeCreditoDoPedidoEvento);
+                    });
+                }
             }
         }
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            _mensageria.Dispose();
-            return base.StopAsync(cancellationToken);
+            using (var escopo = _scopeFactory.CreateScope())
+            {
+                var mensageria = escopo.ServiceProvider.GetService<IBus>();
+                mensageria.Dispose();
+                return base.StopAsync(cancellationToken);
+            }
         }
     }
 }

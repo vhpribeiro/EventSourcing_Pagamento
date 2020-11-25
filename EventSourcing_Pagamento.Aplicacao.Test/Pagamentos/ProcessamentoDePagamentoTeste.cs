@@ -17,13 +17,16 @@ namespace EventSourcing_Pagamento.Aplicacao.Test.Pagamentos
         private readonly Mock<IBus> _mensageria;
         private readonly ProcessamentoDePagamento _processamentoDePagamento;
         private readonly Faker _faker;
+        private readonly Mock<IUnitOfWork> _unitOfWork;
 
         public ProcessamentoDePagamentoTeste()
         {
             _faker = new Faker();
             _pagamentoRepositorio = new Mock<IPagamentoRepositorio>();
             _mensageria = new Mock<IBus>();
-            _processamentoDePagamento = new ProcessamentoDePagamento(_pagamentoRepositorio.Object, _mensageria.Object);
+            _unitOfWork = new Mock<IUnitOfWork>();
+            _processamentoDePagamento =
+                new ProcessamentoDePagamento(_pagamentoRepositorio.Object, _mensageria.Object, _unitOfWork.Object);
         }
         
         [Theory]
@@ -37,12 +40,12 @@ namespace EventSourcing_Pagamento.Aplicacao.Test.Pagamentos
             var produto = _faker.Random.String2(9);
             var valor = _faker.Random.Decimal();
             var pedidoCriadoEvento = new PedidoCriadoEvento(id, nomeDoCartao, numeroDeCartaoDeCreditoValido, produto, valor);
-            _pagamentoRepositorio.Setup(pr => pr.Salvar(It.IsAny<Pagamento>()));
+            _pagamentoRepositorio.Setup(pr => pr.Adicionar(It.IsAny<Pagamento>()));
             _mensageria.Setup(m => m.PublishAsync(It.IsAny<PagamentoAprovadoEvento>()));
             
             await _processamentoDePagamento.ProcessarPagamentoAsync(pedidoCriadoEvento);
             
-            _pagamentoRepositorio.Verify(pr => pr.Salvar(It.Is<Pagamento>(p => p.Aprovado)));
+            _pagamentoRepositorio.Verify(pr => pr.Adicionar(It.Is<Pagamento>(p => p.Aprovado)));
         }
         
         [Theory]
@@ -56,7 +59,7 @@ namespace EventSourcing_Pagamento.Aplicacao.Test.Pagamentos
             var produto = _faker.Random.String2(9);
             var valor = _faker.Random.Decimal();
             var pedidoCriadoEvento = new PedidoCriadoEvento(id, nomeDoCartao, numeroDeCartaoDeCreditoValido, produto, valor);
-            _pagamentoRepositorio.Setup(pr => pr.Salvar(It.IsAny<Pagamento>()));
+            _pagamentoRepositorio.Setup(pr => pr.Adicionar(It.IsAny<Pagamento>()));
             _mensageria.Setup(m => m.PublishAsync(It.IsAny<PagamentoAprovadoEvento>()));
             
             await _processamentoDePagamento.ProcessarPagamentoAsync(pedidoCriadoEvento);
@@ -75,13 +78,13 @@ namespace EventSourcing_Pagamento.Aplicacao.Test.Pagamentos
             var produto = _faker.Random.String2(9);
             var valor = _faker.Random.Decimal();
             var pedidoCriadoEvento = new PedidoCriadoEvento(id, nomeDoCartao, numeroDeCartaoDeCreditoInvalido, produto, valor);
-            _pagamentoRepositorio.Setup(pr => pr.Salvar(It.IsAny<Pagamento>()));
+            _pagamentoRepositorio.Setup(pr => pr.Adicionar(It.IsAny<Pagamento>()));
             _mensageria.Setup(m => m.PublishAsync(It.IsAny<PagamentoRecusadoEvento>()));
             
             await _processamentoDePagamento.ProcessarPagamentoAsync(pedidoCriadoEvento);
             
             _pagamentoRepositorio.Verify(pr 
-                => pr.Salvar(It.Is<Pagamento>(p => p.Aprovado == false)));
+                => pr.Adicionar(It.Is<Pagamento>(p => p.Aprovado == false)));
         }
         
         [Theory]
@@ -95,7 +98,7 @@ namespace EventSourcing_Pagamento.Aplicacao.Test.Pagamentos
             var produto = _faker.Random.String2(9);
             var valor = _faker.Random.Decimal();
             var pedidoCriadoEvento = new PedidoCriadoEvento(id, nomeDoCartao, numeroDeCartaoDeCreditoValido, produto, valor);
-            _pagamentoRepositorio.Setup(pr => pr.Salvar(It.IsAny<Pagamento>()));
+            _pagamentoRepositorio.Setup(pr => pr.Adicionar(It.IsAny<Pagamento>()));
             _mensageria.Setup(m => m.PublishAsync(It.IsAny<PagamentoRecusadoEvento>()));
             
             await _processamentoDePagamento.ProcessarPagamentoAsync(pedidoCriadoEvento);
