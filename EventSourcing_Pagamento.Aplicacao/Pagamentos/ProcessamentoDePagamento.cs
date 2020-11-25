@@ -11,11 +11,14 @@ namespace EventSourcing_Pagamento.Aplicacao.Pagamentos
     {
         private readonly IPagamentoRepositorio _pagamentoRepositorio;
         private readonly IBus _mensageria;
+        private IUnitOfWork _unitOfWork;
 
-        public ProcessamentoDePagamento(IPagamentoRepositorio pagamentoRepositorio, IBus mensageria)
+        public ProcessamentoDePagamento(IPagamentoRepositorio pagamentoRepositorio, IBus mensageria, 
+            IUnitOfWork unitOfWork)
         {
             _pagamentoRepositorio = pagamentoRepositorio;
             _mensageria = mensageria;
+            _unitOfWork = unitOfWork;
         }
         
         public async Task ProcessarPagamentoAsync(PedidoCriadoEvento pedidoCriadoEvento)
@@ -25,7 +28,8 @@ namespace EventSourcing_Pagamento.Aplicacao.Pagamentos
             
             ValidarCartaoDeCredito(pagamento, pedidoCriadoEvento.Produto, pedidoCriadoEvento.Valor);
 
-            await _pagamentoRepositorio.Salvar(pagamento);
+            _pagamentoRepositorio.Adicionar(pagamento);
+            await _unitOfWork.Commit();
         }
         
         public async Task ReprocessarPagamentoAsync(AlterouCartaoDeCreditoDoPedidoEvento alterouCartaoDeCreditoDoPedidoEvento)

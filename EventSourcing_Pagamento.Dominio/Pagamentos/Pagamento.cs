@@ -1,13 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using EventSourcing_Pagamento.Dominio._Helpers;
 
 namespace EventSourcing_Pagamento.Dominio.Pagamentos
 {
-    public class Pagamento
+    public class Pagamento : Entidade
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
         public string NomeNoCartaoDeCredito { get; set; }
         public string NumeroDoCartaoDeCredito { get; set; }
         public int IdDoPedido { get; set; }
